@@ -1,4 +1,19 @@
 'use strict';
-require('babelify/polyfill'); //remove this line if you don't care about ES6 pollyfils
+var d3 = require('d3');
+var debounce = require('./debounce.js');
 
-console.log('Hey! Ho! Let\'s go!'); //remove this line if you don't care about The Ramones
+var dataURL = 'data/bonds.csv';
+
+d3.csv(dataURL, gotData);
+
+function gotData(data){
+	d3.select('chart-section').datum(data);
+	d3.select(window)
+		.on( 'resize', debounce(draw, 125) );
+
+	draw();
+}
+
+function draw(){
+	console.log('drawing');
+}
