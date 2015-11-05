@@ -3,4 +3,12 @@ D3 workshop example 3
 
 ###Responsive stuff
 
-1 noticing page changes
+noticing page changes (branch: master)
+
+draw a chart (branch: draw-a-chart)
+
+prevent multiple charts appearing (branch: prevent-multiple-charts-appearing)
+
+resize the svg (branch: change-size)
+
+separate node creation and attribute setting (branch:separate-node-creation)

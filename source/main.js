@@ -23,9 +23,10 @@ function gotData(data){
 
 function draw(){
 	var figure = d3.select('.chart-container');
+	var bounds = figure.node().getBoundingClientRect();
 
 	var data = figure.datum();
-	var width = 500, height = 500;
+	var width = bounds.width, height = bounds.height;
 	var margin = { top:20, left:20, bottom:20, right:20 };
 
 	var dateScale = d3.time.scale()
@@ -40,21 +41,21 @@ function draw(){
 		.x(function(d) { return dateScale( d.date ); })
 		.y(function(d) { return valueScale( d.value ); });
 
-	var plot = figure.append('svg')
-			.attr({
-				width:width,
-				height:height
-			})
-		.append('g')
-			.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-		.append('path')
-			.attr({
-				'd': line,
-				'fill': 'none',
-				'stroke': '#000',
-				'stroke-width': 1,
-				'stroke-opacity': 0.5
-			});
+	figure.selectAll('svg')
+		.data([data])
+			.enter()
+		.append('svg')
+		.append('g').classed('plot',true)
+		.append('path').classed('values',true);
+			
+	figure.select('svg').attr({
+			width:width,
+			height:height
+		})
+
+	figure.select('.plot').attr( 'transform', 'translate(' + margin.left + ',' + margin.top + ')' )
+	figure.select('.values')
+			.attr( 'd', line );
 
 
 }
