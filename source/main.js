@@ -26,13 +26,23 @@ function draw(){
 	var figure = d3.select('.chart-container');
 	var bounds = figure.node().getBoundingClientRect();
 
-	var data = figure.datum();
-	var mean = d3.mean(data, function(d){
-		return d.value;
-	});
+	//thin out the data
+	//if he number of points is greater than the number of pixels in the range
 
 	var width = bounds.width, height = bounds.height;
 	var margin = { top:20, left:20, bottom:20, right:20 };
+	var spacing = Math.ceil( figure.datum().length/width );
+	
+	var data = figure.datum();
+
+	var newData = [];
+	for(var i=0;i<figure.datum().length;i += spacing){
+		newData.push(figure.datum()[i]);
+	}
+
+	var mean = d3.mean(data, function(d){
+		return d.value;
+	});
 
 	var dateScale = d3.time.scale()
 		.domain( d3.extent(data, function(d){ return d.date }) )
@@ -47,7 +57,7 @@ function draw(){
 		.y(function(d) { return valueScale( d.value ); });
 
 	figure.selectAll('svg')
-		.data([data])
+		.data([0])
 			.enter()
 		.append('svg')
 		.append('g').classed('plot',true)
@@ -79,7 +89,7 @@ function draw(){
 			y:valueScale,
 			dy: -5,
 			'text-anchor':'end'
-		})
+		});
 
 	figure.select('svg').attr({
 			width: width,
@@ -87,8 +97,8 @@ function draw(){
 		});
 
 	figure.select('.plot').attr( 'transform', 'translate(' + margin.left + ',' + margin.top + ')' )
-	figure.select('.values')
-			.attr( 'd', line );
 
+	figure.select('.values').data([newData])
+			.attr( 'd', line );
 
 }
