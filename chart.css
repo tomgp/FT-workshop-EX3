@@ -2,5 +2,10 @@
 	fill: none;
 	stroke: #000;
 	stroke-width: 1;
-	stroke-opacity: 0.5;
+}
+
+.annotation{
+	stroke:#000;
+	stroke-width:1;
+	stroke-dasharray:5, 5;
 }

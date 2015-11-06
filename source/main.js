@@ -22,10 +22,15 @@ function gotData(data){
 }
 
 function draw(){
+
 	var figure = d3.select('.chart-container');
 	var bounds = figure.node().getBoundingClientRect();
 
 	var data = figure.datum();
+	var mean = d3.mean(data, function(d){
+		return d.value;
+	});
+
 	var width = bounds.width, height = bounds.height;
 	var margin = { top:20, left:20, bottom:20, right:20 };
 
@@ -47,11 +52,39 @@ function draw(){
 		.append('svg')
 		.append('g').classed('plot',true)
 		.append('path').classed('values',true);
-			
-	figure.select('svg').attr({
-			width:width,
-			height:height
+	
+	figure.select('svg')
+		.selectAll('line')
+		.data([mean])
+			.enter()
+		.append('line').classed('annotation',true);
+
+	figure.select('svg')
+		.selectAll('text')
+		.data([mean])
+			.enter()
+		.append('text').classed('label',true).text('mean');
+
+	figure.selectAll('.annotation')
+		.attr({
+			x1: margin.left,
+			y1: valueScale,
+			x2: width-margin.right,
+			y2: valueScale
+		});
+
+	figure.selectAll('.label')
+		.attr({
+			x:width-margin.right,
+			y:valueScale,
+			dy: -5,
+			'text-anchor':'end'
 		})
+
+	figure.select('svg').attr({
+			width: width,
+			height: height
+		});
 
 	figure.select('.plot').attr( 'transform', 'translate(' + margin.left + ',' + margin.top + ')' )
 	figure.select('.values')
