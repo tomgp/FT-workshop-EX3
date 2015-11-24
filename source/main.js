@@ -13,11 +13,12 @@ function gotData(data){
 		var timeFormat = d3.time.format('%Y-%m-%d');
 		return {
 			date: timeFormat.parse( d['date'] ),
-			value: d['US 10yr bond']
+			value: Number(d['US 10yr bond'])
 		}
 	});
 
 	function redraw(){
+		console.log(processed.length);
 		draw(processed);
 	}
 
@@ -64,6 +65,8 @@ function draw(data){
 		.append('svg')
 		.append('g').classed('plot',true)
 		.append('path').classed('values',true);
+
+	console.log( d3.select('path.values').datum() )
 	
 	figure.select('svg')
 		.selectAll('line')
