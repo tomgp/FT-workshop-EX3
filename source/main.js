@@ -7,32 +7,44 @@ var dataURL = 'data/bonds.csv';
 d3.csv(dataURL, gotData);
 
 function gotData(data){
-	var timeFormat = d3.time.format('%Y-%m-%d');
-	d3.select('.chart-container').datum(data.map(function(d){
+
+
+	var processed = data.map(function(d){
+		var timeFormat = d3.time.format('%Y-%m-%d');
 		return {
 			date: timeFormat.parse( d['date'] ),
 			value: d['US 10yr bond']
 		}
-	}));
+	});
+
+	function redraw(){
+		draw(processed);
+	}
 
 	d3.select(window)
-		.on( 'resize', debounce(draw, 200) );
+		.on( 'resize', debounce(redraw, 200) );
 
-	draw();
+	redraw();
 }
 
-function draw(){
-
+function draw(data){
 	var figure = d3.select('.chart-container');
 	var bounds = figure.node().getBoundingClientRect();
 
-	var data = figure.datum();
 	var mean = d3.mean(data, function(d){
 		return d.value;
 	});
 
 	var width = bounds.width, height = bounds.height;
 	var margin = { top:20, left:20, bottom:20, right:20 };
+
+	var filtered = data.filter(function(d,i){
+			var targetLength = width;
+			var removalFrequency = Math.floor(data.length/targetLength); //use floor to leave more than the target length, ceil to leave fewer elements
+			return (i % removalFrequency == 0);
+		});
+
+
 
 	var dateScale = d3.time.scale()
 		.domain( d3.extent(data, function(d){ return d.date }) )
@@ -47,7 +59,7 @@ function draw(){
 		.y(function(d) { return valueScale( d.value ); });
 
 	figure.selectAll('svg')
-		.data([data])
+		.data([filtered])
 			.enter()
 		.append('svg')
 		.append('g').classed('plot',true)
