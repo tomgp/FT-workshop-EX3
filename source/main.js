@@ -40,12 +40,10 @@ function draw(data){
 	var margin = { top:20, left:20, bottom:20, right:20 };
 
 	var filtered = data.filter(function(d,i){
-			var targetLength = width;
-			var removalFrequency = Math.floor(data.length/targetLength); //use floor to leave more than the target length, ceil to leave fewer elements
-			return (i % removalFrequency == 0);
-		});
-
-
+		var targetLength = width;
+		var removalFrequency = Math.floor(data.length/targetLength); //use floor to leave more than the target length, ceil to leave fewer elements
+		return (i % removalFrequency == 0);
+	});
 
 	var dateScale = d3.time.scale()
 		.domain( d3.extent(data, function(d){ return d.date }) )
